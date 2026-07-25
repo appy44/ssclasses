@@ -8,7 +8,9 @@ const ICONS = [
 
 const objects = [];
 
-const COUNT = 20;
+const isMobile = window.innerWidth < 768;
+
+const COUNT = isMobile ? 15 : 35;
 
 function rand(min,max){
     return Math.random()*(max-min)+min;
@@ -24,7 +26,11 @@ for(let i=0;i<COUNT;i++){
 
     el.innerHTML=ICONS[Math.floor(Math.random()*ICONS.length)];
 
-    const size=rand(22,52);
+	const isMobile = window.innerWidth < 768;
+
+	const size = isMobile
+		? rand(12, 26)
+		: rand(22, 52);
 
     el.style.fontSize=size+"px";
 
