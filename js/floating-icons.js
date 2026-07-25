@@ -10,7 +10,7 @@ const objects = [];
 
 const isMobile = window.innerWidth < 768;
 
-const COUNT = isMobile ? 15 : 35;
+const COUNT = isMobile ? 10 : 25;
 
 function rand(min,max){
     return Math.random()*(max-min)+min;
@@ -29,8 +29,8 @@ for(let i=0;i<COUNT;i++){
 	const isMobile = window.innerWidth < 768;
 
 	const size = isMobile
-		? rand(12, 26)
-		: rand(22, 52);
+		? rand(12, 20)
+		: rand(20, 35);
 
     el.style.fontSize=size+"px";
 

@@ -14,7 +14,7 @@
     pointer-events:none;
     user-select:none;
 
-    opacity:.09;
+    opacity:.06;
 
     will-change:transform;
 
@@ -23,10 +23,10 @@
 
 .particle{
     position:fixed;
-    width:9px;
-    height:9px;
+    width:1px;
+    height:1px;
     border-radius:50%;
-    background:rgba(255,216,107,1);
+    background:rgba(255,216,107,0.6);
     animation:particleFly linear forwards;
 }
 
