@@ -1,23 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sunayana's Saraswati Classes</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-<style></style>
-
+<link rel="stylesheet" href="css/floating-icons.css">
+<style>
+*{box-sizing:border-box}body{margin:0;height:100vh;display:grid;place-items:center;overflow:hidden;
+background:radial-gradient(circle at top,#17366f,#09152d 70%);font-family:Arial,sans-serif}
+.card{position:relative;z-index:5;background:rgba(255,255,255,.08);backdrop-filter:blur(18px);
+padding:40px;border-radius:28px}
+.logo-wrap{position:relative;width:320px;height:320px;display:grid;place-items:center}
+.orbit-ring{position:absolute;inset:-18px;border-radius:50%;
+border:2px solid rgba(255,215,120,.18)}
+.orbit-ring:before{content:"";position:absolute;inset:-3px;border-radius:50%;
+background:conic-gradient(transparent 0 300deg,#ffd86b 330deg,transparent 360deg);
+-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+animation:spin 3s linear infinite}
+.logo{width:100%;border-radius:50%}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
 </head>
-
 <body>
-
+<div class="background-icons"></div>
 <div class="card">
-Index
+<div class="logo-wrap">
+<div class="orbit-ring"></div>
+<img class="logo" src="logo.png">
 </div>
+</div>
+<script src="js/floating-icons.js"></script>
+<script>
+const bg = document.querySelector(".background-icons");
 
+const icons = [
+    "📚",
+    "📖",
+    "✏️",
+    "🖊️",
+    "🖌️",
+    "🎨",
+    "📐",
+    "📏",
+    "🌍",
+    "⭐"
+];
+
+const TOTAL_ICONS = 40;
+
+function random(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+function createFlyingIcon() {
+
+    const icon = document.createElement("div");
+    icon.className = "story-item";
+    icon.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+
+    const size = random(20, 55);
+
+    icon.style.fontSize = size + "px";
+    icon.style.opacity = random(0.02, 0.06);
+
+    let startX, startY;
+    let endX, endY;
+
+    const side = Math.floor(Math.random() * 4);
+
+    switch (side) {
+
+        // Left -> Right
+        case 0:
+            startX = -100;
+            startY = random(0, window.innerHeight);
+
+            endX = window.innerWidth + 100;
+            endY = random(0, window.innerHeight);
+            break;
+
+        // Right -> Left
+        case 1:
+            startX = window.innerWidth + 100;
+            startY = random(0, window.innerHeight);
+
+            endX = -100;
+            endY = random(0, window.innerHeight);
+            break;
+
+        // Top -> Bottom
+        case 2:
+            startX = random(0, window.innerWidth);
+            startY = -100;
+
+            endX = random(0, window.innerWidth);
+            endY = window.innerHeight + 100;
+            break;
+
+        // Bottom -> Top
+        default:
+            startX = random(0, window.innerWidth);
+            startY = window.innerHeight + 100;
+
+            endX = random(0, window.innerWidth);
+            endY = -100;
+    }
+
+    icon.style.left = startX + "px";
+    icon.style.top = startY + "px";
+
+    bg.appendChild(icon);
+
+    const duration = random(30000, 70000);
+
+    icon.animate([
+        {
+            transform: `translate(0px,0px) rotate(0deg) scale(0.8)`
+        },
+        {
+            transform: `translate(${endX-startX}px,${endY-startY}px)
+                        rotate(${random(180,720)}deg)
+                        scale(1.2)`
+        }
+    ],{
+        duration,
+        easing:"linear",
+        fill:"forwards"
+    });
+
+    setTimeout(()=>{
+        icon.remove();
+        createFlyingIcon();
+    },duration);
+}
+
+
+// Create icons
+
+for(let i=0;i<TOTAL_ICONS;i++){
+
+    setTimeout(createFlyingIcon,i*300);
+
+}
+
+
+// ---------------------
+// Golden particles
+// ---------------------
+
+function particle(){
+
+    const p=document.createElement("div");
+
+    p.className="particle";
+
+    p.style.left="50%";
+    p.style.top="50%";
+
+    const angle=Math.random()*Math.PI*2;
+
+    const dist=random(150,500);
+
+    p.style.setProperty("--x",Math.cos(angle)*dist+"px");
+    p.style.setProperty("--y",Math.sin(angle)*dist+"px");
+
+    p.style.animationDuration=random(3,7)+"s";
+
+    bg.appendChild(p);
+
+    setTimeout(()=>p.remove(),7000);
+
+}
+
+setInterval(particle,120);
+</script>
 </body>
 </html>

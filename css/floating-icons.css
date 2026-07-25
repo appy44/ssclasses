@@ -1,0 +1,45 @@
+.background-icons{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:0;
+}
+
+.story-item{
+    position:fixed;
+    left:0;
+    top:0;
+
+    pointer-events:none;
+    user-select:none;
+
+    opacity:.09;
+
+    will-change:transform;
+
+    filter:drop-shadow(0 0 8px rgba(255,216,107,1));
+}
+
+.particle{
+    position:fixed;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:rgba(255,216,107,1);
+    animation:particleFly linear forwards;
+}
+
+@keyframes particleFly{
+
+    from{
+        transform:translate(0,0) scale(1);
+        opacity:1;
+    }
+
+    to{
+        transform:translate(var(--x),var(--y)) scale(0);
+        opacity:0;
+    }
+
+}
