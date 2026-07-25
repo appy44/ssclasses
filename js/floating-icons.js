@@ -5,18 +5,16 @@ const ICONS = [
     "🖌️","🎨","📐","📏",
     "🌍","⭐","🎒","🎓",
 	"➕","➖","🏆","✖️",
-	"🚀","🎵","🏅","🎶",
-	"🧭","🌙","☀","➗",
-	"🔬","🧪","⚗️","🧮",
-	"🧬","🔭","🧲",
-	"⚛️","🌡️"
+	"🚀","🎵","🏅","🧭",
+	"➗","🧮","🧬","🔭",
+	"⚛️"
 ];
 
 const objects = [];
 
 const isMobile = window.innerWidth < 768;
 
-const COUNT = isMobile ? 18 : 32;
+const COUNT = isMobile ? 25 : 50;
 
 function rand(min,max){
     return Math.random()*(max-min)+min;
