@@ -1,8 +1,9 @@
 #ssc-toast{
 
     position:fixed;
-
-    left:50%;
+	width:350px;
+    text-align:Center;
+	left:50%;
     bottom:30px;
 
     transform:translateX(-50%);
