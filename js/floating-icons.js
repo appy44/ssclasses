@@ -4,86 +4,87 @@ const ICONS = [
     "📚","📖","✏️","🖊️",
     "🖌️","🎨","📐","📏",
     "🌍","⭐","🎒","🎓",
-	"➕","➖","🏆","✖️",
-	"🚀","🎵","🏅","🧭",
-	"➗","🧮","🧬","🔭",
-	"⚛️"
+    "➕","➖","🏆","✖️",
+    "🚀","🎵","🏅","🧭",
+    "➗","🧮","🧬","🔭",
+    "⚛️"
 ];
 
 const objects = [];
 
-const isMobile = window.innerWidth < 768;
-
-const COUNT = isMobile ? 25 : 50;
+let animationFrame = null;
+let resizeTimer = null;
 
 function rand(min,max){
     return Math.random()*(max-min)+min;
 }
 
-// Create Icons
+function createIcons(){
 
-for(let i=0;i<COUNT;i++){
+    bg.innerHTML="";
 
-    const el=document.createElement("div");
+    objects.length=0;
 
-    el.className="story-item";
+    const isMobile = window.innerWidth < 768;
 
-    el.innerHTML=ICONS[Math.floor(Math.random()*ICONS.length)];
+    const COUNT = isMobile ? 25 : 50;
 
-	const isMobile = window.innerWidth < 768;
+    for(let i=0;i<COUNT;i++){
 
-	const size = isMobile
-		? rand(12, 20)
-		: rand(20, 35);
+        const el=document.createElement("div");
 
-    el.style.fontSize=size+"px";
+        el.className="story-item";
 
-    el.style.opacity=rand(.2,0.5);
+        el.innerHTML=ICONS[Math.floor(Math.random()*ICONS.length)];
 
-    bg.appendChild(el);
+        const size=isMobile
+            ? rand(12,20)
+            : rand(20,35);
 
-    objects.push({
+        el.style.fontSize=size+"px";
+        el.style.opacity=rand(.2,.5);
 
-        el,
+        bg.appendChild(el);
 
-        x:rand(0,window.innerWidth),
+        objects.push({
 
-        y:rand(0,window.innerHeight),
+            el,
 
-        vx:rand(.15,.45)*(Math.random()<.5?-1:1),
+            x:rand(0,window.innerWidth-size),
 
-        vy:rand(.15,.45)*(Math.random()<.5?-1:1),
+            y:rand(0,window.innerHeight-size),
 
-        angle:rand(0,360),
+            vx:rand(.15,.45)*(Math.random()<.5?-1:1),
 
-        rotateSpeed:rand(-.2,.2),
+            vy:rand(.15,.45)*(Math.random()<.5?-1:1),
 
-        size
+            angle:rand(0,360),
 
-    });
+            rotateSpeed:rand(-.2,.2),
+
+            size
+
+        });
+
+    }
 
 }
 
-// Animation
+createIcons();
 
 function animate(){
 
     const w=window.innerWidth;
-
     const h=window.innerHeight;
 
     objects.forEach(o=>{
 
         o.x+=o.vx;
-
         o.y+=o.vy;
-
-        // Bounce
 
         if(o.x<0){
 
             o.x=0;
-
             o.vx*=-1;
 
         }
@@ -91,7 +92,6 @@ function animate(){
         if(o.x>w-o.size){
 
             o.x=w-o.size;
-
             o.vx*=-1;
 
         }
@@ -99,7 +99,6 @@ function animate(){
         if(o.y<0){
 
             o.y=0;
-
             o.vy*=-1;
 
         }
@@ -107,12 +106,9 @@ function animate(){
         if(o.y>h-o.size){
 
             o.y=h-o.size;
-
             o.vy*=-1;
 
         }
-
-        // Floating wave
 
         o.y+=Math.sin(Date.now()/1200+o.x*.01)*0.2;
 
@@ -123,87 +119,71 @@ function animate(){
          rotate(${o.angle}deg)`;
 
     });
-// Collision Detection
 
-for(let i=0;i<objects.length;i++){
+    // Collision Detection
 
-    for(let j=i+1;j<objects.length;j++){
+    for(let i=0;i<objects.length;i++){
 
-        const a=objects[i];
-        const b=objects[j];
+        for(let j=i+1;j<objects.length;j++){
 
-        const dx=b.x-a.x;
-        const dy=b.y-a.y;
+            const a=objects[i];
+            const b=objects[j];
 
-        const dist=Math.sqrt(dx*dx+dy*dy);
+            const dx=b.x-a.x;
+            const dy=b.y-a.y;
 
-        const minDist=(a.size+b.size)/2;
+            const dist=Math.sqrt(dx*dx+dy*dy)||1;
 
-        if(dist<minDist){
+            const minDist=(a.size+b.size)/2;
 
-            // Normal vector
+            if(dist<minDist){
 
-            const nx=dx/dist;
-            const ny=dy/dist;
+                const nx=dx/dist;
+                const ny=dy/dist;
 
-            // Push apart
+                const overlap=minDist-dist;
 
-            const overlap=minDist-dist;
+                a.x-=nx*overlap*.5;
+                a.y-=ny*overlap*.5;
 
-            a.x-=nx*overlap*.5;
-            a.y-=ny*overlap*.5;
+                b.x+=nx*overlap*.5;
+                b.y+=ny*overlap*.5;
 
-            b.x+=nx*overlap*.5;
-            b.y+=ny*overlap*.5;
+                const force=0.4;
 
-            // Swap velocity
+                a.vx-=nx*force;
+                a.vy-=ny*force;
 
-			const force=0.4;
+                b.vx+=nx*force;
+                b.vy+=ny*force;
 
-			a.vx-=nx*force;
-			a.vy-=ny*force;
+                const MAX_SPEED=0.8;
 
-			b.vx+=nx*force;
-			b.vy+=ny*force;
-			
-			const MAX_SPEED=0.8;
+                a.vx=Math.max(-MAX_SPEED,Math.min(MAX_SPEED,a.vx));
+                a.vy=Math.max(-MAX_SPEED,Math.min(MAX_SPEED,a.vy));
 
-a.vx=Math.max(-MAX_SPEED,Math.min(MAX_SPEED,a.vx));
-a.vy=Math.max(-MAX_SPEED,Math.min(MAX_SPEED,a.vy));
+                b.vx=Math.max(-MAX_SPEED,Math.min(MAX_SPEED,b.vx));
+                b.vy=Math.max(-MAX_SPEED,Math.min(MAX_SPEED,b.vy));
 
-b.vx=Math.max(-MAX_SPEED,Math.min(MAX_SPEED,b.vx));
-b.vy=Math.max(-MAX_SPEED,Math.min(MAX_SPEED,b.vy));
+                impactSpark((a.x+b.x)/2,(a.y+b.y)/2);
 
-impactSpark((a.x+b.x)/2,(a.y+b.y)/2);
-            // Small rotation impact
+                a.rotateSpeed+=rand(-0.2,0.2);
+                b.rotateSpeed+=rand(-0.2,0.2);
 
-            a.rotateSpeed+=rand(-0.2,0.2);
-            b.rotateSpeed+=rand(-0.2,0.2);
+            }
 
         }
 
     }
 
-}
-    requestAnimationFrame(animate);
+    animationFrame=requestAnimationFrame(animate);
 
 }
 
 animate();
-
-window.addEventListener("resize",()=>{
-
-    objects.forEach(o=>{
-
-        o.x=Math.min(o.x,window.innerWidth-o.size);
-
-        o.y=Math.min(o.y,window.innerHeight-o.size);
-
-    });
-
-});
-
+// ----------------------------
 // Golden particles
+// ----------------------------
 
 function particle(){
 
@@ -212,26 +192,29 @@ function particle(){
     p.className="particle";
 
     p.style.left="50%";
-
     p.style.top="50%";
 
     const angle=Math.random()*Math.PI*2;
-
     const dist=150+Math.random()*350;
 
     p.style.setProperty("--x",Math.cos(angle)*dist+"px");
-
     p.style.setProperty("--y",Math.sin(angle)*dist+"px");
 
     p.style.animationDuration=(3+Math.random()*4)+"s";
 
     bg.appendChild(p);
 
-    setTimeout(()=>p.remove(),7000);
+    setTimeout(()=>{
+        p.remove();
+    },7000);
 
 }
 
-setInterval(particle,150);
+const particleInterval = setInterval(particle,150);
+
+// ----------------------------
+// Impact Spark
+// ----------------------------
 
 function impactSpark(x,y){
 
@@ -254,8 +237,65 @@ function impactSpark(x,y){
 
         bg.appendChild(p);
 
-        setTimeout(()=>p.remove(),800);
+        setTimeout(()=>{
+            p.remove();
+        },800);
 
     }
 
 }
+
+// ----------------------------
+// Resize Fix
+// ----------------------------
+
+window.addEventListener("resize",()=>{
+
+    document.body.classList.add("resizing");
+
+    clearTimeout(resizeTimer);
+
+    resizeTimer=setTimeout(()=>{
+
+        // Stop animation
+        if(animationFrame){
+            cancelAnimationFrame(animationFrame);
+        }
+
+        // Remove all old icons
+        document.querySelectorAll(".story-item").forEach(e=>e.remove());
+
+        // Reset objects
+        objects.length=0;
+
+        // Create fresh layout
+        createIcons();
+
+        // Restart animation
+        animate();
+
+        document.body.classList.remove("resizing");
+
+    },250);
+
+});
+
+// ----------------------------
+// Page Visibility Optimization
+// ----------------------------
+
+document.addEventListener("visibilitychange",()=>{
+
+    if(document.hidden){
+
+        if(animationFrame){
+            cancelAnimationFrame(animationFrame);
+        }
+
+    }else{
+
+        animate();
+
+    }
+
+});

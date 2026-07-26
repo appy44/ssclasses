@@ -1,45 +1,30 @@
+
 .background-icons{
-    position:fixed;
-    inset:0;
-    overflow:hidden;
-    pointer-events:none;
-    z-index:0;
+ position:fixed;
+ inset:0;
+ overflow:hidden;
+ pointer-events:none;
+ z-index:0;
+ opacity:1;
+ transition:opacity .3s ease;
 }
-
+body.resizing .background-icons{opacity:0;}
 .story-item{
-    position:fixed;
-    left:0;
-    top:0;
-
-    pointer-events:none;
-    user-select:none;
-
-    opacity:.06;
-
-    will-change:transform;
-
-    filter:drop-shadow(0 0 8px rgba(255,216,107,1));
+ position:fixed;
+ left:0;top:0;
+ user-select:none;
+ pointer-events:none;
+ will-change:transform;
+ filter:drop-shadow(0 0 8px rgba(255,216,107,1));
 }
-
 .particle{
-    position:fixed;
-    width:1px;
-    height:1px;
-    border-radius:50%;
-    background:rgba(255,216,107,0.6);
-    animation:particleFly linear forwards;
+ position:fixed;
+ width:1px;height:1px;
+ border-radius:50%;
+ background:rgba(255,216,107,.6);
+ animation:particleFly linear forwards;
 }
-
 @keyframes particleFly{
-
-    from{
-        transform:translate(0,0) scale(1);
-        opacity:1;
-    }
-
-    to{
-        transform:translate(var(--x),var(--y)) scale(0);
-        opacity:0;
-    }
-
+ from{transform:translate(0,0) scale(1);opacity:1;}
+ to{transform:translate(var(--x),var(--y)) scale(0);opacity:0;}
 }
